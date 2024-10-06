@@ -62,6 +62,6 @@ console.log(vidlinkData);
 }
 ```
 ## Credits
-If you use this code or any part of it in your projects, please give credit to @Toasty360. You can mention my contribution in your README.md or project documentation. Thank you for your support!
+If you use this ugly code or any part of it in your projects, please give credit to @Toasty360. You can mention my contribution in your README.md or project documentation. Thank you for your support!
 
 Feel free to update the status as the providers' availability changes.
