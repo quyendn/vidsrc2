@@ -31,7 +31,7 @@ To use the provider services, you can call the `getSource` method, passing the r
 ### Vidlink.pro Example
 To fetch a video source from Vidlink.pro, you can use the following fetch example:
 ```typescript
-const baseURL = "https://vidlink.pro/api";
+const baseURL = "YOUR_API_BASE_URL";
 const vidlinkResponse = await fetch(
   baseURL + "/vidlink/watch?isMovie=false&id=124364&episode=1&season=2"
 );
