@@ -1,7 +1,17 @@
 //vidsrc.cc/v2/embed/tv/124364/1/5
-
+import * as querystring from 'querystring';
 import { Provider, Source } from "../utils/types";
+const API_KEY = '85f31af1-9be8-4122-8c0d-06f502e51d5c';
 
+function getScrapeOpsUrl(url: string): string {
+    const payload = {
+        api_key: API_KEY,
+        url: url,
+        keep_headers: true
+    };
+    const proxyUrl = 'https://proxy.scrapeops.io/v1/?' + querystring.stringify(payload);
+    return proxyUrl;
+}
 class Upcloud extends Provider {
   baseUrl = "https://vidsrc.cc/";
   headers = {
@@ -24,7 +34,7 @@ class Upcloud extends Provider {
       console.log(mediaurl);
 
       const [title, movieId, v] = await (
-        await fetch(mediaurl, {
+        await fetch(getScrapeOpsUrl(mediaurl), {
           headers: {
             ...this.headers,
             Accept:
@@ -55,7 +65,7 @@ class Upcloud extends Provider {
       });
       console.log(this.baseUrl + `api/episodes/${id}/servers?${params}`);
       var { data } = await (
-        await fetch(this.baseUrl + `api/episodes/${id}/servers?${params}`, {
+        await fetch(getScrapeOpsUrl(this.baseUrl + `api/episodes/${id}/servers?${params}`), {
           headers: this.headers,
         })
       ).json();
@@ -70,7 +80,7 @@ class Upcloud extends Provider {
       });
 
       const source = await (
-        await fetch(this.baseUrl + "api/source/" + hash, {
+        await fetch(getScrapeOpsUrl(this.baseUrl + "api/source/" + hash), {
           headers: {
             ...this.headers,
             Referer: `${this.baseUrl}upcloud/e/${hash}?init=true&key=${v}`,
@@ -85,6 +95,7 @@ class Upcloud extends Provider {
       throw error;
     }
   }
+  
 }
 
 export default Upcloud;

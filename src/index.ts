@@ -4,6 +4,7 @@ import Upcloud from "./extractors/upcloud";
 import { Source } from "./utils/types";
 import VidsrcNet from "./extractors/vidsrcNet";
 import Vidlink from "./extractors/vidlink";
+import Hdrezka from "./extractors/hdrezka";
 
 const cors = require("cors");
 
@@ -59,7 +60,35 @@ app.get("/upcloud/watch", async (req: Request, res: Response) => {
     res.send(error);
   }
 });
+app.get("/hdrezka/watch", async (req: Request, res: Response) => {
+  res.setHeader("Content-Type", "application/json");
+  let src: Source;
+  const hdrezka = new Hdrezka();
 
+  try {
+    const id = req.query.id;
+    const isMovie = req.query.isMovie == "true";
+    if (!isMovie) {
+      const season = req.query.season;
+      const episode = req.query.episode;
+      console.log(id, isMovie, episode, season);
+      src = await hdrezka.getSource(
+        id?.toString()!,
+        isMovie,
+        season?.toString(),
+        episode?.toString()
+      );
+    } else {
+      src = await hdrezka.getSource(id?.toString()!, isMovie);
+    }
+
+    res.json(src);
+  } catch (error) {
+    console.log("faild ", error);
+
+    res.send(error);
+  }
+});
 app.get("/vidsrc/watch", async (req: Request, res: Response) => {
   res.setHeader("Content-Type", "application/json");
   let src: Source;
