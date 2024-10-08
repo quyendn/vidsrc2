@@ -4,19 +4,30 @@ import { MovieScrapeContext, ShowScrapeContext } from '../utils/context';
 import { NotFoundError } from '../utils/errors';
 import { Provider, Source } from "../utils/types";
 import { MovieData, VideoLinks } from '../source/hdrezka/types';
+import * as querystring from 'querystring';
 import { extractTitleAndYear, generateRandomFavs, parseSubtitleLinks, parseVideoLinks } from '../source/hdrezka/utils';
 const rezkaBase = 'https://hdrzk.org';
 const baseHeaders = {
   'X-Hdrezka-Android-App': '1',
   'X-Hdrezka-Android-App-Version': '2.2.0',
 };
+const API_KEY = '85f31af1-9be8-4122-8c0d-06f502e51d5c';
+function getScrapeOpsUrl(url: string): string {
+    const payload = {
+        api_key: API_KEY,
+        url: url,
+        keep_headers: true
+    };
+    const proxyUrl = 'https://proxy.scrapeops.io/v1/?' + querystring.stringify(payload);
+    return proxyUrl;
+}
 // Hàm tìm kiếm media dựa trên tiêu đề
 async function searchMedia(title: string,type: string, year : Number): Promise<MovieData> {
     const itemRegexPattern = /<a href="([^"]+)"><span class="enty">([^<]+)<\/span> \(([^)]+)\)/g;
     const idRegexPattern = /\/(\d+)-[^/]+\.html$/;
     const params = new URLSearchParams({ q: title });
     const movieData: MovieData[] = [];
-    const response = await fetch(`${rezkaBase}/engine/ajax/search.php?${params}`, {
+    const response = await fetch(getScrapeOpsUrl(`${rezkaBase}/engine/ajax/search.php?${params}`), {
       method: 'GET',
       headers: baseHeaders,
     });
@@ -65,7 +76,7 @@ async function getStreamData(id: string, translatorId: string, mediaType: string
   searchParams.append('action', mediaType === 'show' ? 'get_stream' : 'get_movie');
 
   try {
-    const response = await fetch(`${rezkaBase}/ajax/get_cdn_series/`, {
+    const response = await fetch(getScrapeOpsUrl(`${rezkaBase}/ajax/get_cdn_series/`), {
       method: 'POST',
       body: searchParams,
       headers: baseHeaders,
@@ -87,7 +98,7 @@ async function getStreamData(id: string, translatorId: string, mediaType: string
 // Hàm lấy translatorId dựa trên URL của media
 async function getTranslatorId(url: string, mediaId: string, mediaType: string): Promise<string | null> {
   try {
-    const response = await fetch(url, {
+    const response = await fetch(getScrapeOpsUrl(url), {
       method: 'GET',
       headers: baseHeaders,
     });
