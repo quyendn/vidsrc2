@@ -27,7 +27,7 @@ async function searchMedia(title: string,type: string, year : Number): Promise<M
     const idRegexPattern = /\/(\d+)-[^/]+\.html$/;
     const params = new URLSearchParams({ q: title });
     const movieData: MovieData[] = [];
-    const response = await fetch(getScrapeOpsUrl(`${rezkaBase}/engine/ajax/search.php?${params}`), {
+    const response = await fetch(`${rezkaBase}/engine/ajax/search.php?${params}`, {
       method: 'GET',
       headers: baseHeaders,
     });
@@ -76,7 +76,7 @@ async function getStreamData(id: string, translatorId: string, mediaType: string
   searchParams.append('action', mediaType === 'show' ? 'get_stream' : 'get_movie');
 
   try {
-    const response = await fetch(getScrapeOpsUrl(`${rezkaBase}/ajax/get_cdn_series/`), {
+    const response = await fetch(`${rezkaBase}/ajax/get_cdn_series/`, {
       method: 'POST',
       body: searchParams,
       headers: baseHeaders,
@@ -98,7 +98,7 @@ async function getStreamData(id: string, translatorId: string, mediaType: string
 // Hàm lấy translatorId dựa trên URL của media
 async function getTranslatorId(url: string, mediaId: string, mediaType: string): Promise<string | null> {
   try {
-    const response = await fetch(getScrapeOpsUrl(url), {
+    const response = await fetch(url, {
       method: 'GET',
       headers: baseHeaders,
     });
