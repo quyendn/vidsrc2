@@ -2,7 +2,8 @@
 import * as querystring from 'querystring';
 import { Provider, Source } from "../utils/types";
 const API_KEY = '85f31af1-9be8-4122-8c0d-06f502e51d5c';
-
+import axios from "axios";
+import { Cheerio} from 'cheerio';
 function getScrapeOpsUrl(url: string): string {
     const payload = {
         api_key: API_KEY,
@@ -32,27 +33,19 @@ class Upcloud extends Provider {
         "v2/embed/" +
         (isMovie ? `movie/${id}` : `tv/${id}/${season}/${episode}`);
       console.log(mediaurl);
-
-      const [title, movieId, v] = await (
-        await fetch(getScrapeOpsUrl(mediaurl), {
-          headers: {
-            ...this.headers,
-            Accept:
-              "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-            Connection: "keep-alive",
-            "Sec-Fetch-Dest": "document",
-          },
-        })
-      )
-        .text()
-        .then((resp) => {
-          console.log(resp.match(/<title>(.*?)<\/title>/)![1]);
-          return [
-            resp.match(/<title>(.*?)<\/title>/)![1],
-            resp.match(/data-id="(.*?)"/g)![1].split('"')[1],
-            resp.match(/var\s*v\s*=\s*"(.*?)"/)![1],
-          ];
-        });
+      const mediaInfo = await axios.get(mediaurl, {
+        headers: {
+          ...this.headers,
+          Accept:
+            "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
+          Connection: "keep-alive",
+          "Sec-Fetch-Dest": "document",
+        },
+      });
+      const mediaData = await mediaInfo.data;
+      const title =  mediaData.match(/<title>(.*?)<\/title>/)![1];
+      const movieId = mediaData.match(/data-id="(.*?)"/g)![1].split('"')[1];
+      const v =  mediaData.match(/var\s*v\s*=\s*"(.*?)"/)![1];
       const params: URLSearchParams = new URLSearchParams({
         id: String(id),
         type: isMovie ? "movie" : "tv",
@@ -65,10 +58,10 @@ class Upcloud extends Provider {
       });
       console.log(this.baseUrl + `api/episodes/${id}/servers?${params}`);
       var { data } = await (
-        await fetch(getScrapeOpsUrl(this.baseUrl + `api/episodes/${id}/servers?${params}`), {
+        await axios.get(this.baseUrl + `api/episodes/${id}/servers?${params}`, {
           headers: this.headers,
         })
-      ).json();
+      ).data;
 
       let hash = data.find(
         (source: { name: string }) => source.name === "UpCloud"
@@ -80,13 +73,13 @@ class Upcloud extends Provider {
       });
 
       const source = await (
-        await fetch(getScrapeOpsUrl(this.baseUrl + "api/source/" + hash), {
+        await axios.get(this.baseUrl + "api/source/" + hash, {
           headers: {
             ...this.headers,
             Referer: `${this.baseUrl}upcloud/e/${hash}?init=true&key=${v}`,
           },
         })
-      ).json();
+      ).data;
       console.log(source);
       // return title;
       return { title, ...source };

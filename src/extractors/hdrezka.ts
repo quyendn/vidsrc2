@@ -5,11 +5,17 @@ import { NotFoundError } from '../utils/errors';
 import { Provider, Source } from "../utils/types";
 import { MovieData, VideoLinks } from '../source/hdrezka/types';
 import * as querystring from 'querystring';
+import axios from "axios";
+import { Cheerio} from 'cheerio';
 import { extractTitleAndYear, generateRandomFavs, parseSubtitleLinks, parseVideoLinks } from '../source/hdrezka/utils';
 const rezkaBase = 'https://hdrzk.org';
 const baseHeaders = {
   'Host' : 'proxy.wafflehacker.io',
   'Origin' : 'https://www.vidbinge.com',
+  'X-Hdrezka-Android-App': '1',
+  'X-Hdrezka-Android-App-Version': '2.2.0',
+};
+const baseHeadersX = {
   'X-Hdrezka-Android-App': '1',
   'X-Hdrezka-Android-App-Version': '2.2.0',
 };
@@ -29,16 +35,11 @@ async function searchMedia(title: string,type: string, year : Number): Promise<M
     const idRegexPattern = /\/(\d+)-[^/]+\.html$/;
     const params = new URLSearchParams({ q: title });
     const movieData: MovieData[] = [];
-    const response = await fetch(`https://proxy.wafflehacker.io/?destination=${rezkaBase}/engine/ajax/search.php?${params}`, {
+    const response = await axios.get(`${rezkaBase}/engine/ajax/search.php?${params}`, {
       method: 'GET',
-      headers: baseHeaders,
+      headers: baseHeadersX,
     });
-
-    if (!response.ok) {
-      throw new Error(`Search failed with status ${response.status}`);
-    }
-
-    const data = await response.text();  // Vì API trả về HTML
+    const data = await response.data;  // Vì API trả về HTML
     console.log('Search results:', data);
     
     for (const match of data.matchAll(itemRegexPattern)) {
@@ -78,17 +79,12 @@ async function getStreamData(id: string, translatorId: string, mediaType: string
   searchParams.append('action', mediaType === 'show' ? 'get_stream' : 'get_movie');
 
   try {
-    const response = await fetch(`${rezkaBase}/ajax/get_cdn_series/`, {
-      method: 'POST',
-      body: searchParams,
-      headers: baseHeaders,
+
+    const response = await axios.post(`${rezkaBase}/ajax/get_cdn_series/`, searchParams, {
+      headers: baseHeadersX,
     });
 
-    if (!response.ok) {
-      throw new Error(`Stream fetch failed with status ${response.status}`);
-    }
-
-    const data = await response.json();  // Phản hồi JSON
+    const data = await response.data;  // Phản hồi JSON
     console.log('Stream data:', data);
     return data;  // Trả về link video và subtitles
   } catch (error) {
@@ -101,19 +97,11 @@ async function getStreamData(id: string, translatorId: string, mediaType: string
 async function getTranslatorId(url: string, mediaId: string, mediaType: string): Promise<string | null> {
   try {
     let urlTranslation = "https://proxy.wafflehacker.io/?destination=" + url;
-    const response = await fetch(urlTranslation, {
+    const response = await axios.get(urlTranslation, {
       method: 'GET',
       headers: baseHeaders,
     });
-
-    if (!response.ok) {
-      throw new Error(`Failed to get translatorId with status ${response.status}`);
-    }
-
-    const html = await response.text();  // API trả về HTML
-    console.log('Media page HTML:', html);
-
-    // Tìm translatorId từ HTML
+    const html = await response.data;
     const translatorMatch = html.match(/data-translator_id="(\d+)"/);
     if (translatorMatch) {
       return translatorMatch[1];
