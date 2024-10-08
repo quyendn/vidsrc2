@@ -8,6 +8,8 @@ import * as querystring from 'querystring';
 import { extractTitleAndYear, generateRandomFavs, parseSubtitleLinks, parseVideoLinks } from '../source/hdrezka/utils';
 const rezkaBase = 'https://hdrzk.org';
 const baseHeaders = {
+  'Host' : 'proxy.wafflehacker.io',
+  'Origin' : 'https://www.vidbinge.com',
   'X-Hdrezka-Android-App': '1',
   'X-Hdrezka-Android-App-Version': '2.2.0',
 };
@@ -27,7 +29,7 @@ async function searchMedia(title: string,type: string, year : Number): Promise<M
     const idRegexPattern = /\/(\d+)-[^/]+\.html$/;
     const params = new URLSearchParams({ q: title });
     const movieData: MovieData[] = [];
-    const response = await fetch(`${rezkaBase}/engine/ajax/search.php?${params}`, {
+    const response = await fetch(`https://proxy.wafflehacker.io/?destination=${rezkaBase}/engine/ajax/search.php?${params}`, {
       method: 'GET',
       headers: baseHeaders,
     });
@@ -98,7 +100,8 @@ async function getStreamData(id: string, translatorId: string, mediaType: string
 // Hàm lấy translatorId dựa trên URL của media
 async function getTranslatorId(url: string, mediaId: string, mediaType: string): Promise<string | null> {
   try {
-    const response = await fetch(url, {
+    let urlTranslation = "https://proxy.wafflehacker.io/?destination=" + url;
+    const response = await fetch(urlTranslation, {
       method: 'GET',
       headers: baseHeaders,
     });
