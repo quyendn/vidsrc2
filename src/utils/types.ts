@@ -30,7 +30,7 @@ export interface Stream {
   link: string;
   type: string;
   quality?: '360' | '480' | '720' | '1080' | '2160';
-  subtitles: string;
+  subtitles: string[];
   headers?: any;
 }
 

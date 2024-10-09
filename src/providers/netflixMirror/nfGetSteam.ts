@@ -18,7 +18,7 @@ export const nfGetStream = async (id: string): Promise<Stream[]> => {
       streamLinks.push({
         server: source.label,
         link: baseUrl + source.file,
-        subtitles : '',
+        subtitles : [],
         type: 'm3u8',
         headers: {
           Referer: baseUrl,

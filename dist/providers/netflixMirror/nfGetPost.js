@@ -40,7 +40,7 @@ const axios_1 = __importDefault(require("axios"));
 const cheerio = __importStar(require("cheerio"));
 const nfHeaders_1 = require("./nfHeaders");
 const getBaseUrl_1 = require("../../utils/getBaseUrl");
-const nfGetPost = function (filter, page, providerValue, signal) {
+const nfGetPost = function (filter, page, providerValue) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const baseUrl = yield (0, getBaseUrl_1.getBaseUrl)('nfMirror');
@@ -51,7 +51,7 @@ const nfGetPost = function (filter, page, providerValue, signal) {
             // console.log(filter);
             const url = `${baseUrl + filter}`;
             // console.log(url);
-            const res = yield axios_1.default.get(url, { headers: nfHeaders_1.headers, signal });
+            const res = yield axios_1.default.get(url, { headers: nfHeaders_1.headers });
             const data = res.data;
             const $ = cheerio.load(data);
             $('a.post-data').map((i, element) => {
@@ -80,7 +80,7 @@ const nfGetPost = function (filter, page, providerValue, signal) {
     });
 };
 exports.nfGetPost = nfGetPost;
-const nfGetPostsSearch = function (searchQuery, page, providerValue, signal) {
+const nfGetPostsSearch = function (searchQuery, page, providerValue) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             if (page > 1) {
@@ -90,7 +90,7 @@ const nfGetPostsSearch = function (searchQuery, page, providerValue, signal) {
             const baseUrl = yield (0, getBaseUrl_1.getBaseUrl)('nfMirror');
             const url = `${baseUrl + '/search.php?s=' + encodeURI(searchQuery)}`;
             // console.log('search', url);
-            const res = yield axios_1.default.get(url, { headers: nfHeaders_1.headers, signal });
+            const res = yield axios_1.default.get(url, { headers: nfHeaders_1.headers });
             const data = res.data;
             data === null || data === void 0 ? void 0 : data.searchResult.map((result) => {
                 const title = result === null || result === void 0 ? void 0 : result.t;

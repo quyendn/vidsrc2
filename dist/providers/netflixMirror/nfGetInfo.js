@@ -25,8 +25,10 @@ const nfGetInfo = function (link) {
                 headers: nfHeaders_1.headers,
             });
             const data = res.data;
+            console.log('data', data);
             const id = (_a = link.split('id=')[1]) === null || _a === void 0 ? void 0 : _a.split('&')[0];
             const meta = {
+                id: id,
                 title: data.title,
                 synopsis: data.desc,
                 image: `https://img.nfmirrorcdn.top/poster/h/${id}.jpg`,
@@ -40,6 +42,7 @@ const nfGetInfo = function (link) {
             if (((_d = data === null || data === void 0 ? void 0 : data.season) === null || _d === void 0 ? void 0 : _d.length) > 0) {
                 data.season.map((season) => {
                     linkList.push({
+                        id: id,
                         title: 'Season ' + (season === null || season === void 0 ? void 0 : season.s),
                         episodesLink: season === null || season === void 0 ? void 0 : season.id,
                     });
@@ -47,6 +50,7 @@ const nfGetInfo = function (link) {
             }
             else {
                 linkList.push({
+                    id: id,
                     title: meta.title,
                     directLinks: [{ link: link, title: 'Movie', type: 'movie' }],
                 });
@@ -56,6 +60,7 @@ const nfGetInfo = function (link) {
         catch (err) {
             console.error(err);
             return {
+                id: '',
                 title: '',
                 synopsis: '',
                 image: '',
