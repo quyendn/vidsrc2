@@ -36,6 +36,7 @@ export interface Stream {
 
 // getInfo
 export interface Info {
+  id: string;
   title: string;
   image: string;
   synopsis: string;
@@ -53,6 +54,7 @@ export interface EpisodeLink {
 }
 
 export interface Link {
+  id: string,
   title: string;
   quality?: string;
   episodesLink?: string;

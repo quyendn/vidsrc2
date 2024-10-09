@@ -10,8 +10,10 @@ export const nfGetInfo = async function (link: string): Promise<Info> {
       headers: headers,
     });
     const data = res.data;
+    console.log('data', data);
     const id = link.split('id=')[1]?.split('&')[0];
     const meta = {
+      id: id,
       title: data.title,
       synopsis: data.desc,
       image: `https://img.nfmirrorcdn.top/poster/h/${id}.jpg`,
@@ -26,12 +28,14 @@ export const nfGetInfo = async function (link: string): Promise<Info> {
     if (data?.season?.length > 0) {
       data.season.map((season: any) => {
         linkList.push({
+          id : id,
           title: 'Season ' + season?.s,
           episodesLink: season?.id,
         });
       });
     } else {
       linkList.push({
+        id : id,
         title: meta.title,
         directLinks: [{link: link, title: 'Movie', type: 'movie'}],
       });
@@ -45,6 +49,7 @@ export const nfGetInfo = async function (link: string): Promise<Info> {
   } catch (err) {
     console.error(err);
     return {
+      id : '',
       title: '',
       synopsis: '',
       image: '',

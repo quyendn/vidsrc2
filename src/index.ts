@@ -5,7 +5,7 @@ import { Source } from "./utils/types";
 import VidsrcNet from "./extractors/vidsrcNet";
 import Vidlink from "./extractors/vidlink";
 import Hdrezka from "./extractors/hdrezka";
-
+import Iosmirror from "./extractors/iosmirror";
 const cors = require("cors");
 
 const app = express();
@@ -30,7 +30,32 @@ app.get("/", (req, res) => {
   res.json("Welcome to the Video Server");
 });
 // GET route to fetch items
+app.get("/iosmirror/watch", async (req: Request, res: Response) => {
+  res.setHeader("Content-Type", "application/json");
+  let src: Source;
+  const iosmirror = new Iosmirror();
 
+  try {
+    const id = req.query.id;
+    const isMovie = req.query.isMovie == "true";
+    if (!isMovie) {
+      const season = req.query.season;
+      const episode = req.query.episode;
+      console.log(id, isMovie, episode, season);
+      src = await iosmirror.getSource( id?.toString()!,
+      isMovie,
+      season?.toString(),
+      episode?.toString());
+    } else {
+      src = await iosmirror.getSource(id?.toString()!, isMovie);
+    }
+    res.json(src);
+  } catch (error) {
+    console.log("faild ", error);
+
+    res.send(error);
+  }
+});
 app.get("/upcloud/watch", async (req: Request, res: Response) => {
   res.setHeader("Content-Type", "application/json");
   let src: Source;

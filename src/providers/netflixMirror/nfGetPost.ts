@@ -7,9 +7,8 @@ import {getBaseUrl} from '../../utils/getBaseUrl';
 export const nfGetPost = async function (
   filter: string,
   page: number,
-  providerValue: string,
-  signal: AbortSignal,
-): Promise<Post[]> {
+  providerValue: string
+  ): Promise<Post[]> {
   try {
     const baseUrl = await getBaseUrl('nfMirror');
     const catalog: Post[] = [];
@@ -20,7 +19,7 @@ export const nfGetPost = async function (
 
     const url = `${baseUrl + filter}`;
     // console.log(url);
-    const res = await axios.get(url, {headers, signal});
+    const res = await axios.get(url, {headers});
     const data = res.data;
     const $ = cheerio.load(data);
     $('a.post-data').map((i, element) => {
@@ -51,8 +50,7 @@ export const nfGetPost = async function (
 export const nfGetPostsSearch = async function (
   searchQuery: string,
   page: number,
-  providerValue: string,
-  signal: AbortSignal,
+  providerValue: string
 ): Promise<Post[]> {
   try {
     if (page > 1) {
@@ -62,7 +60,7 @@ export const nfGetPostsSearch = async function (
     const baseUrl = await getBaseUrl('nfMirror');
     const url = `${baseUrl + '/search.php?s=' + encodeURI(searchQuery)}`;
     // console.log('search', url);
-    const res = await axios.get(url, {headers, signal});
+    const res = await axios.get(url, {headers});
     const data = res.data;
     data?.searchResult.map((result: any) => {
       const title = result?.t;
