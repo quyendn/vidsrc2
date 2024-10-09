@@ -8,6 +8,7 @@ import Hdrezka from "./extractors/hdrezka";
 import Iosmirror from "./extractors/iosmirror";
 import chalk from "chalk";
 import AutoEmbed  from "./extractors/autoembed";
+import moviesDrive  from "./extractors/moviesDrive";
 const cors = require("cors");
 
 const app = express();
@@ -50,6 +51,32 @@ app.get("/autoEmbed/watch", async (req: Request, res: Response) => {
       episode?.toString());
     } else {
       src = await autoEmbed.getSource(id?.toString()!, isMovie);
+    }
+    res.json(src);
+  } catch (error) {
+    console.log("faild ", error);
+
+    res.send(error);
+  }
+});
+app.get("/moviesDrive/watch", async (req: Request, res: Response) => {
+  res.setHeader("Content-Type", "application/json");
+  let src: Source;
+  const movieDrive = new moviesDrive();
+
+  try {
+    const id = req.query.id;
+    const isMovie = req.query.isMovie == "true";
+    if (!isMovie) {
+      const season = req.query.season;
+      const episode = req.query.episode;
+      console.log(id, isMovie, episode, season);
+      src = await movieDrive.getSource( id?.toString()!,
+      isMovie,
+      season?.toString(),
+      episode?.toString());
+    } else {
+      src = await movieDrive.getSource(id?.toString()!, isMovie);
     }
     res.json(src);
   } catch (error) {

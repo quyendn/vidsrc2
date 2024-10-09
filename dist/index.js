@@ -18,6 +18,8 @@ const vidsrcNet_1 = __importDefault(require("./extractors/vidsrcNet"));
 const vidlink_1 = __importDefault(require("./extractors/vidlink"));
 const hdrezka_1 = __importDefault(require("./extractors/hdrezka"));
 const iosmirror_1 = __importDefault(require("./extractors/iosmirror"));
+const chalk_1 = __importDefault(require("chalk"));
+const autoembed_1 = __importDefault(require("./extractors/autoembed"));
 const cors = require("cors");
 const app = (0, express_1.default)();
 const PORT = 3000;
@@ -32,9 +34,32 @@ app.use((req, res, next) => {
     next();
 });
 app.get("/", (req, res) => {
-    res.json("Welcome to the Video Server");
+    res.status(200).send("Welcome to FlixQuest API! 🎉");
 });
 // GET route to fetch items
+app.get("/autoEmbed/watch", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.setHeader("Content-Type", "application/json");
+    let src;
+    const autoEmbed = new autoembed_1.default();
+    try {
+        const id = req.query.id;
+        const isMovie = req.query.isMovie == "true";
+        if (!isMovie) {
+            const season = req.query.season;
+            const episode = req.query.episode;
+            console.log(id, isMovie, episode, season);
+            src = yield autoEmbed.getSource(id === null || id === void 0 ? void 0 : id.toString(), isMovie, season === null || season === void 0 ? void 0 : season.toString(), episode === null || episode === void 0 ? void 0 : episode.toString());
+        }
+        else {
+            src = yield autoEmbed.getSource(id === null || id === void 0 ? void 0 : id.toString(), isMovie);
+        }
+        res.json(src);
+    }
+    catch (error) {
+        console.log("faild ", error);
+        res.send(error);
+    }
+}));
 app.get("/iosmirror/watch", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.setHeader("Content-Type", "application/json");
     let src;
@@ -151,5 +176,6 @@ app.get("/vidlink/watch", (req, res) => __awaiter(void 0, void 0, void 0, functi
     }
 }));
 app.listen(PORT, () => {
+    console.log(chalk_1.default.green(`Starting server on port ${PORT}... 🚀`));
     console.log(`Server is running on http://localhost:${PORT}`);
 });

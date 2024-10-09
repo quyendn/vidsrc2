@@ -1,6 +1,7 @@
 import {Post, Stream, Info, EpisodeLink, Catalog} from './utils/types';
 import {netflixMirror} from './providers/netflixMirror';
 import {autoEmbed} from './providers/autoEmbed';
+import {moviesDrive} from './providers/drive';
 export interface ProviderType {
     searchFilter?: string;
     catalog: Catalog[];
@@ -30,6 +31,7 @@ export interface ProviderType {
   }
   export const manifest: Manifest = {
     netflixMirror: netflixMirror,
-    autoEmbed: autoEmbed
+    autoEmbed: autoEmbed,
+    moviesDrive: moviesDrive
   };
   
