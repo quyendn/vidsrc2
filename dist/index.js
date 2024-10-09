@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const upcloud_1 = __importDefault(require("./extractors/upcloud"));
 const vidsrcNet_1 = __importDefault(require("./extractors/vidsrcNet"));
 const vidlink_1 = __importDefault(require("./extractors/vidlink"));
+const hdrezka_1 = __importDefault(require("./extractors/hdrezka"));
 const cors = require("cors");
 const app = (0, express_1.default)();
 const PORT = 3000;
@@ -48,6 +49,29 @@ app.get("/upcloud/watch", (req, res) => __awaiter(void 0, void 0, void 0, functi
         }
         else {
             src = yield upcloud.getSource(id === null || id === void 0 ? void 0 : id.toString(), isMovie);
+        }
+        res.json(src);
+    }
+    catch (error) {
+        console.log("faild ", error);
+        res.send(error);
+    }
+}));
+app.get("/hdrezka/watch", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.setHeader("Content-Type", "application/json");
+    let src;
+    const hdrezka = new hdrezka_1.default();
+    try {
+        const id = req.query.id;
+        const isMovie = req.query.isMovie == "true";
+        if (!isMovie) {
+            const season = req.query.season;
+            const episode = req.query.episode;
+            console.log(id, isMovie, episode, season);
+            src = yield hdrezka.getSource(id === null || id === void 0 ? void 0 : id.toString(), isMovie, season === null || season === void 0 ? void 0 : season.toString(), episode === null || episode === void 0 ? void 0 : episode.toString());
+        }
+        else {
+            src = yield hdrezka.getSource(id === null || id === void 0 ? void 0 : id.toString(), isMovie);
         }
         res.json(src);
     }
