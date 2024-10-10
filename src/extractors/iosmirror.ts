@@ -1,14 +1,28 @@
 import {manifest} from '../Manifest';
 import { DecryptMethods, Provider, Source } from "../utils/types";
 import {Info,Post} from '../utils/types';
+import {fetchMovieData, fetchTVData } from "../utils/function";
 class Iosmirror extends Provider {
     getSource = async (
-        id: string,
+        tmdbId: string,
         isMovie: boolean,
         season?: string,
         episode?: string
       ): Promise<Source | any> => {
         let info: Post[];
+        let releaseYear: string = "";
+        let title: string = "";
+
+        if(isMovie)
+        {
+          await fetchMovieData(tmdbId).then((data) => {
+            if (data) {
+                  releaseYear = data?.year.toString();
+                  title = data?.title;
+              }
+          });
+          
+        }
         info = await manifest["netflixMirror"].GetSearchPosts(
             "The Batman",1,"netflixMirror"
           );
