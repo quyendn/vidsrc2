@@ -12,7 +12,6 @@ class Iosmirror extends Provider {
         let info: Post[];
         let releaseYear: string = "";
         let title: string = "";
-
         if(isMovie)
         {
           await fetchMovieData(tmdbId).then((data) => {
@@ -21,7 +20,6 @@ class Iosmirror extends Provider {
                   title = data?.title;
               }
           });
-          
         }
         info = await manifest["netflixMirror"].GetSearchPosts(
             "The Batman",1,"netflixMirror"

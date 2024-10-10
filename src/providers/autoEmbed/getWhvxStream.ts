@@ -74,13 +74,11 @@ export const getWhvxStream = async (
           referrerPolicy: 'no-referrer',
           body: null,
           signal: searchController.signal,
-  
           method: 'GET',
         },
       );
       const streamJson = await streamRes.json();
       console.log('whvx', provider, streamJson);
-  
       return streamJson?.stream?.[0] || null;
     } catch (err) {
       console.error('whvx', err);
