@@ -18,7 +18,7 @@ export async function getRiveStream(
   const url = atob(pxy) + encodeURIComponent(baseUrl + route);
   await Promise.all(
     servers.map(async server => {
-      // console.log('Rive: ' + url + server);
+      console.log('Rive: ' + url + server);
       try {
         const res = await axios.get(url + server, {timeout: 4000});
         console.log('Rive Stream: ' + url + server);

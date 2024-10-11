@@ -26,7 +26,7 @@ function getRiveStream(tmdId, episode, season, type, Streams) {
         const url = atob(pxy) + encodeURIComponent(baseUrl + route);
         yield Promise.all(servers.map((server) => __awaiter(this, void 0, void 0, function* () {
             var _a, _b, _c, _d, _e, _f;
-            // console.log('Rive: ' + url + server);
+            console.log('Rive: ' + url + server);
             try {
                 const res = yield axios_1.default.get(url + server, { timeout: 4000 });
                 console.log('Rive Stream: ' + url + server);

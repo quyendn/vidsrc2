@@ -20,6 +20,7 @@ const hdrezka_1 = __importDefault(require("./extractors/hdrezka"));
 const iosmirror_1 = __importDefault(require("./extractors/iosmirror"));
 const chalk_1 = __importDefault(require("chalk"));
 const autoembed_1 = __importDefault(require("./extractors/autoembed"));
+const moviesDrive_1 = __importDefault(require("./extractors/moviesDrive"));
 const cors = require("cors");
 const app = (0, express_1.default)();
 const PORT = 3000;
@@ -52,6 +53,29 @@ app.get("/autoEmbed/watch", (req, res) => __awaiter(void 0, void 0, void 0, func
         }
         else {
             src = yield autoEmbed.getSource(id === null || id === void 0 ? void 0 : id.toString(), isMovie);
+        }
+        res.json(src);
+    }
+    catch (error) {
+        console.log("faild ", error);
+        res.send(error);
+    }
+}));
+app.get("/moviesDrive/watch", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.setHeader("Content-Type", "application/json");
+    let src;
+    const movieDrive = new moviesDrive_1.default();
+    try {
+        const id = req.query.id;
+        const isMovie = req.query.isMovie == "true";
+        if (!isMovie) {
+            const season = req.query.season;
+            const episode = req.query.episode;
+            console.log(id, isMovie, episode, season);
+            src = yield movieDrive.getSource(id === null || id === void 0 ? void 0 : id.toString(), isMovie, season === null || season === void 0 ? void 0 : season.toString(), episode === null || episode === void 0 ? void 0 : episode.toString());
+        }
+        else {
+            src = yield movieDrive.getSource(id === null || id === void 0 ? void 0 : id.toString(), isMovie);
         }
         res.json(src);
     }

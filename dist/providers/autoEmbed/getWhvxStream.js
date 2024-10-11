@@ -43,10 +43,12 @@ const getWhvxStream = (imdbId, tmdbId, season, episode, title, type, year, provi
         setTimeout(() => {
             controller.abort();
         }, 4000);
+        let proxyURL = 'https://proxy.wafflehacker.io/?destination=';
         const searchRes = yield fetch(`${atob(baseUrl)}/search?query=${searchQuery}&provider=${provider}`, {
             headers: {
                 'if-none-match': 'W/"d4-7mcv5HTZs5ogd/iJwPMEZ/NGCw0"',
-                origin: atob('aHR0cHM6Ly93d3cudmlkYmluZ2UuY29t'),
+                host: 'www.vidbinge.com',
+                origin: 'https://www.vidbinge.com',
             },
             signal: controller.signal,
             referrerPolicy: 'no-referrer',
@@ -62,7 +64,8 @@ const getWhvxStream = (imdbId, tmdbId, season, episode, title, type, year, provi
         const streamRes = yield fetch(`${atob(baseUrl)}/source?resourceId=${encodeURIComponent(searchJson === null || searchJson === void 0 ? void 0 : searchJson.url)}&provider=${provider}`, {
             headers: {
                 'if-none-match': 'W/"d4-7mcv5HTZs5ogd/iJwPMEZ/NGCw0"',
-                origin: atob('aHR0cHM6Ly93d3cudmlkYmluZ2UuY29t'),
+                host: 'www.vidbinge.com',
+                origin: 'https://www.vidbinge.com'
             },
             referrerPolicy: 'no-referrer',
             body: null,

@@ -6,20 +6,27 @@ export async function getVidSrcRip(
   episode: string,
   stream: Stream[],
 ) {
-  const sources = ['flixhq', 'vidsrcuk', 'vidsrcicu'];
+  //const sources = ['flixhq', 'vidsrcuk', 'vidsrcicu'];
+  const sources = ['flixhq', 'vidsrcicu'];
   const baseUrl = 'aHR0cHM6Ly92aWRzcmMucmlw';
   await Promise.all(
     sources.map(async source => {
       const apiUrl = await useVRF(source, tmdbId, season, episode);
+      let urlRequest = atob(baseUrl) + apiUrl;
+      console.log("urlRequest: " + urlRequest);
       const response = await fetch(atob(baseUrl) + apiUrl);
       const data = await response.json();
-      if (data.sources?.length > 0) {
-        stream.push({
-          server: source,
-          type: data?.sources[0].file.includes('.mp4') ? 'mp4' : 'm3u8',
-          link: data?.sources[0].file,
-          subtitles: []
-        });
+      console.log("data: " + JSON.stringify(data));
+      if(data!=null)
+      {
+        if (data.sources?.length > 0) {
+          stream.push({
+            server: source,
+            type: data?.sources[0].file.includes('.mp4') ? 'mp4' : 'm3u8',
+            link: data?.sources[0].file,
+            subtitles: []
+          });
+        }
       }
     }),
   );

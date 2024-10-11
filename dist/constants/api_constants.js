@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.daddylive247Url = exports.daddyliveTrailingUrl = exports.daddyliveStreamBaseUrl = exports.daddyliveUserAgent = exports.daddyliveReferrer = exports.tmdbKey = exports.tmdbBaseUrl = void 0;
+exports.tmdbBaseUrl = "https://api.themoviedb.org";
+exports.tmdbKey = "56fe967269070acc229414a3bdeed3b5";
+exports.daddyliveReferrer = "https://olalivehdplay.ru/z.m3u8";
+exports.daddyliveUserAgent = "MXPlayer/1.50.1 (Linux; Android 13; en-GB; SM-M127G Build/TP1A.220624.014.M127GXXU6DWJ1)";
+exports.daddyliveStreamBaseUrl = "https://webudit.webhd.ru/lb/premium";
+exports.daddyliveTrailingUrl = `/index.m3u8?|referer=${exports.daddyliveReferrer}`;
+exports.daddylive247Url = "https://dlhd.sx/24-7-channels.php";

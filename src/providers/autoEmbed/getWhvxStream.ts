@@ -42,12 +42,13 @@ export const getWhvxStream = async (
       setTimeout(() => {
         controller.abort();
       }, 4000);
-      const searchRes = await fetch(
-        `${atob(baseUrl)}/search?query=${searchQuery}&provider=${provider}`,
+      let proxyURL = 'https://proxy.wafflehacker.io/?destination=';
+      const searchRes = await fetch(`${atob(baseUrl)}/search?query=${searchQuery}&provider=${provider}`,
         {
           headers: {
             'if-none-match': 'W/"d4-7mcv5HTZs5ogd/iJwPMEZ/NGCw0"',
-            origin: atob('aHR0cHM6Ly93d3cudmlkYmluZ2UuY29t'),
+            host : 'www.vidbinge.com',
+            origin: 'https://www.vidbinge.com',
           },
           signal: controller.signal,
           referrerPolicy: 'no-referrer',
@@ -62,14 +63,14 @@ export const getWhvxStream = async (
       }, 4000);
       const searchJson = await searchRes.json();
       console.log('whvx', provider, searchQuery);
-      const streamRes = await fetch(
-        `${atob(baseUrl)}/source?resourceId=${encodeURIComponent(
+      const streamRes = await fetch(`${atob(baseUrl)}/source?resourceId=${encodeURIComponent(
           searchJson?.url,
         )}&provider=${provider}`,
         {
           headers: {
             'if-none-match': 'W/"d4-7mcv5HTZs5ogd/iJwPMEZ/NGCw0"',
-            origin: atob('aHR0cHM6Ly93d3cudmlkYmluZ2UuY29t'),
+            host : 'www.vidbinge.com',
+            origin: 'https://www.vidbinge.com'
           },
           referrerPolicy: 'no-referrer',
           body: null,

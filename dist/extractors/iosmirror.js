@@ -11,11 +11,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const Manifest_1 = require("../Manifest");
 const types_1 = require("../utils/types");
+const function_1 = require("../utils/function");
 class Iosmirror extends types_1.Provider {
     constructor() {
         super(...arguments);
-        this.getSource = (id, isMovie, season, episode) => __awaiter(this, void 0, void 0, function* () {
+        this.getSource = (tmdbId, isMovie, season, episode) => __awaiter(this, void 0, void 0, function* () {
             let info;
+            let releaseYear = "";
+            let title = "";
+            if (isMovie) {
+                yield (0, function_1.fetchMovieData)(tmdbId).then((data) => {
+                    if (data) {
+                        releaseYear = data === null || data === void 0 ? void 0 : data.year.toString();
+                        title = data === null || data === void 0 ? void 0 : data.title;
+                    }
+                });
+            }
             info = yield Manifest_1.manifest["netflixMirror"].GetSearchPosts("The Batman", 1, "netflixMirror");
             let linkURL = info[0].link;
             console.log("linkURL:" + linkURL);

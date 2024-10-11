@@ -12,20 +12,26 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getVidSrcRip = getVidSrcRip;
 function getVidSrcRip(tmdbId, season, episode, stream) {
     return __awaiter(this, void 0, void 0, function* () {
-        const sources = ['flixhq', 'vidsrcuk', 'vidsrcicu'];
+        //const sources = ['flixhq', 'vidsrcuk', 'vidsrcicu'];
+        const sources = ['flixhq', 'vidsrcicu'];
         const baseUrl = 'aHR0cHM6Ly92aWRzcmMucmlw';
         yield Promise.all(sources.map((source) => __awaiter(this, void 0, void 0, function* () {
             var _a;
             const apiUrl = yield useVRF(source, tmdbId, season, episode);
+            let urlRequest = atob(baseUrl) + apiUrl;
+            console.log("urlRequest: " + urlRequest);
             const response = yield fetch(atob(baseUrl) + apiUrl);
             const data = yield response.json();
-            if (((_a = data.sources) === null || _a === void 0 ? void 0 : _a.length) > 0) {
-                stream.push({
-                    server: source,
-                    type: (data === null || data === void 0 ? void 0 : data.sources[0].file.includes('.mp4')) ? 'mp4' : 'm3u8',
-                    link: data === null || data === void 0 ? void 0 : data.sources[0].file,
-                    subtitles: []
-                });
+            console.log("data: " + JSON.stringify(data));
+            if (data != null) {
+                if (((_a = data.sources) === null || _a === void 0 ? void 0 : _a.length) > 0) {
+                    stream.push({
+                        server: source,
+                        type: (data === null || data === void 0 ? void 0 : data.sources[0].file.includes('.mp4')) ? 'mp4' : 'm3u8',
+                        link: data === null || data === void 0 ? void 0 : data.sources[0].file,
+                        subtitles: []
+                    });
+                }
             }
         })));
     });
