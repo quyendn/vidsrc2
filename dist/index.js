@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const upcloud_1 = __importDefault(require("./extractors/upcloud"));
 const vidsrcNet_1 = __importDefault(require("./extractors/vidsrcNet"));
 const vidlink_1 = __importDefault(require("./extractors/vidlink"));
+const vidsrc_xyz_1 = require("./extractors/vidsrc.xyz");
 const hdrezka_1 = __importDefault(require("./extractors/hdrezka"));
 const iosmirror_1 = __importDefault(require("./extractors/iosmirror"));
 const chalk_1 = __importDefault(require("chalk"));
@@ -197,6 +198,20 @@ app.get("/vidlink/watch", (req, res) => __awaiter(void 0, void 0, void 0, functi
     catch (error) {
         console.log("faild ", error);
         res.send(error);
+    }
+}));
+app.get("/vidsrcin/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { id } = req.params;
+        const s = req.query.s;
+        const e = req.query.e;
+        const result = yield (0, vidsrc_xyz_1.mainVidSrc)(id, s, e);
+        console.log("result from vidsrcpro: ", result);
+        res.json(result);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error vidsrc.me' });
     }
 }));
 app.listen(PORT, () => {

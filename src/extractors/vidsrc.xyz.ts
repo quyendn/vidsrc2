@@ -268,7 +268,7 @@ async function fwh(url: string, ref: string) {
     setTimeout(() => {
       controller.abort();
     }, 4000);
-
+    console.log("data fwh: " + url);
     let resp = await axios.get(url, {
         headers: {
             "User-Agent": user_agent,
