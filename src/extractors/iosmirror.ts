@@ -21,8 +21,9 @@ class Iosmirror extends Provider {
               }
           });
         }
+        console.log("title:" + title);
         info = await manifest["netflixMirror"].GetSearchPosts(
-            "The Batman",1,"netflixMirror"
+          title,1,"netflixMirror"
           );
         let linkURL = info[0].link;
         console.log("linkURL:" + linkURL);

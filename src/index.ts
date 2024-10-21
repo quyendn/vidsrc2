@@ -4,6 +4,7 @@ import Upcloud from "./extractors/upcloud";
 import { Source } from "./utils/types";
 import VidsrcNet from "./extractors/vidsrcNet";
 import Vidlink from "./extractors/vidlink";
+import { mainVidSrc } from "./extractors/vidsrc.xyz";
 import Hdrezka from "./extractors/hdrezka";
 import Iosmirror from "./extractors/iosmirror";
 import chalk from "chalk";
@@ -225,6 +226,19 @@ app.get("/vidlink/watch", async (req: Request, res: Response) => {
     console.log("faild ", error);
 
     res.send(error);
+  }
+});
+app.get("/vidsrcin/:id", async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const s = (req.query as unknown as { s: string }).s;
+    const e = (req.query as unknown as { e: string }).e;
+    const result = await mainVidSrc(id,s,e);
+    console.log("result from vidsrcpro: ", result);
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error vidsrc.me' });
   }
 });
 app.listen(PORT, () => {
