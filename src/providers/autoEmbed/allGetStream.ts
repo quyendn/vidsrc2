@@ -51,19 +51,19 @@ export const allGetStream = async (
      //await getRiveStream(tmdbId, episode, season, type, streams);
      ///// vidsrcrip
      //await getVidSrcRip(tmdbId, season, episode, streams);
-    ///// flimxy
-    // const flimxyStream = await getFlimxyStream(imdbId, season, episode, type);
-    // if (flimxyStream) {
-    //    for (const quality in flimxyStream?.qualities) {
-    //      streams.push({
-    //        server: 'Flimxy-' + quality,
-    //        link: flimxyStream?.qualities?.[quality]?.url,
-    //        type: flimxyStream?.qualities?.[quality]?.type || 'mp4',
-    //        quality: quality as any,
-    //        subtitles: []
-    //      });
-    //    }
-    // }
+    // ///// flimxy
+    //  const flimxyStream = await getFlimxyStream(imdbId, season, episode, type);
+    //  if (flimxyStream) {
+    //     for (const quality in flimxyStream?.qualities) {
+    //       streams.push({
+    //         server: 'Flimxy-' + quality,
+    //         link: flimxyStream?.qualities?.[quality]?.url,
+    //         type: flimxyStream?.qualities?.[quality]?.type || 'mp4',
+    //         quality: quality as any,
+    //       subtitles: []
+    //       });
+    //     }
+    //  }
     const server1Url =
        type === 'movie'
          ? `https://${atob(autoembed)}/embed/oplayer.php?id=${imdbId}`

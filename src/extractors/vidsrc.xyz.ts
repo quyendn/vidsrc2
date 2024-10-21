@@ -301,13 +301,17 @@ const mainVidSrc = async (xrax: string,s: string,e: string) => {
       });
     console.log("data:" + resSearch.data)
 
-    let main_resp = await fetch(movie_embed_link, {
+    let main_resp = await axios.get(movie_embed_link, {
         headers: {
             "User-Agent": user_agent,
             "Referer": movie_embed_link
-        }
+        },
+        proxy: get_random_proxy(proxies),
+        signal: controller.signal,
+        method: 'GET'
     });
-    let txt = await main_resp.text();
+    console.log("movie_embed_link:" + main_resp.data)
+    let txt = await main_resp.data();
 
     let reg = /player_iframe" src="[^"]*/g
     let rcp_link = regMatch(txt, reg)[0];
