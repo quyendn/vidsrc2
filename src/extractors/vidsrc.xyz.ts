@@ -14,6 +14,10 @@ interface StreamInfo {
     quality: string;
     url?: string;
   }
+  const proxies = {
+    http: 'http://134.209.67.109:19752',
+    https: 'http://70.186.128.126:8080'
+  };
   function parseM3U8(content: string,main: string): StreamInfo[] {
     const lines = content.split('\n');
     const streams: StreamInfo[] = [];
@@ -252,15 +256,31 @@ function decrypt(method: string, encoded: string) {
 }
 
 async function fwh(url: string, ref: string) {
-    let resp = await fetch(url, {
+    // let resp = await fetch(url, {
+    //     headers: {
+    //         "User-Agent": user_agent,
+    //         "Referer": ref,
+    //         "Origin": ref,
+    //     }
+    // });
+    // let txt = await resp.text();
+    const controller = new AbortController();
+    setTimeout(() => {
+      controller.abort();
+    }, 4000);
+
+    let resp = await axios.get(url, {
         headers: {
             "User-Agent": user_agent,
             "Referer": ref,
             "Origin": ref,
-        }
+        },
+        proxy: get_random_proxy(proxies),
+        signal: controller.signal,
+        method: 'GET'
     });
-    let txt = await resp.text();
-
+    let txt = await resp.data;
+    console.log("data fwh: " + txt);
     return txt;
 }
 
@@ -282,10 +302,7 @@ const mainVidSrc = async (xrax: string,s: string,e: string) => {
     }
     console.log("movie_embed_link:" + movie_embed_link);
 
-    const proxies = {
-        http: 'http://134.209.67.109:19752',
-        https: 'http://70.186.128.126:8080'
-      };
+   
       const controller = new AbortController();
       setTimeout(() => {
         controller.abort();
