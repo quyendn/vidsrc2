@@ -301,7 +301,30 @@ const mainVidSrc = async (xrax: string,s: string,e: string) => {
       });
     console.log("data:" + resSearch.data)
 
-    let main_resp = await axios.get(movie_embed_link, {
+    // let main_resp = await fetch(movie_embed_link, {
+    //     headers: {
+    //         "User-Agent": user_agent,
+    //         "Referer": movie_embed_link
+    //     }
+    // });
+    // let txt = await main_resp.text();
+    let txt = await resSearch.data;
+
+    let reg = /player_iframe" src="[^"]*/g
+    let rcp_link = regMatch(txt, reg)[0];
+    rcp_link = "https://" + rcp_link.slice(22);
+    console.log("rcp_link:" + rcp_link);
+
+    //console.log(rcp_link);
+    // let rcp_resp = await fetch(rcp_link, {
+    //     headers: {
+    //         "User-Agent": user_agent,
+    //         "Referer": movie_embed_link
+    //     }
+    // });
+    // let rcp_txt = await rcp_resp.text();
+
+    let rcp_resp = await axios.get(rcp_link, {
         headers: {
             "User-Agent": user_agent,
             "Referer": movie_embed_link
@@ -310,25 +333,12 @@ const mainVidSrc = async (xrax: string,s: string,e: string) => {
         signal: controller.signal,
         method: 'GET'
     });
-    console.log("movie_embed_link:" + main_resp.data)
-    let txt = await main_resp.data();
+    let rcp_txt = await rcp_resp.data;
 
-    let reg = /player_iframe" src="[^"]*/g
-    let rcp_link = regMatch(txt, reg)[0];
-    rcp_link = "https://" + rcp_link.slice(22);
-
-
-    //console.log(rcp_link);
-    let rcp_resp = await fetch(rcp_link, {
-        headers: {
-            "User-Agent": user_agent,
-            "Referer": movie_embed_link
-        }
-    });
-    let rcp_txt = await rcp_resp.text();
 
     reg = /prorcp[^']*/g
     let srcrcp_link = "https://ate60vs7zcjhsjo5qgv8.com/" + regMatch(rcp_txt, reg)[0];
+    console.log("srcrcp_link:" + srcrcp_link);
     let srcrcp_text = await fwh(srcrcp_link, rcp_link);
     const streams: StreamInfo[] = [];
     try {
