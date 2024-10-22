@@ -5,6 +5,7 @@ import { Source } from "./utils/types";
 import VidsrcNet from "./extractors/vidsrcNet";
 import Vidlink from "./extractors/vidlink";
 import { mainVidSrc } from "./extractors/vidsrc.xyz";
+import { decodeVidSrc } from "./extractors/vidsrc.decode";
 import Hdrezka from "./extractors/hdrezka";
 import Iosmirror from "./extractors/iosmirror";
 import chalk from "chalk";
@@ -13,7 +14,7 @@ import moviesDrive  from "./extractors/moviesDrive";
 const cors = require("cors");
 
 const app = express();
-const PORT = 3000;
+const PORT = 8668;
 
 // Middleware to parse JSON requests
 app.use(express.json());
@@ -241,6 +242,19 @@ app.get("/vidsrcin/:id", async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal server error vidsrc.me' });
   }
 });
+app.get("/vidsrcx/:id", async (req: Request, res: Response) => {
+  try {
+    const src_link = (req.query as unknown as { src_link: string }).src_link;
+    const rcp_link = (req.query as unknown as { rcp_link: string }).rcp_link;
+    const result = await decodeVidSrc(src_link,rcp_link);
+    console.log("result from vidsrcx: ", result);
+    res.json(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal server error vidsrc.me' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(chalk.green(`Starting server on port ${PORT}... 🚀`));
   console.log(`Server is running on http://localhost:${PORT}`);
