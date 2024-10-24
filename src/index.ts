@@ -11,10 +11,11 @@ import Iosmirror from "./extractors/iosmirror";
 import chalk from "chalk";
 import AutoEmbed  from "./extractors/autoembed";
 import moviesDrive  from "./extractors/moviesDrive";
+import moviesApi from "./extractors/moviesApi";
 const cors = require("cors");
 
 const app = express();
-const PORT = 3000;
+const PORT = 8088;
 
 // Middleware to parse JSON requests
 app.use(express.json());
@@ -53,6 +54,32 @@ app.get("/autoEmbed/watch", async (req: Request, res: Response) => {
       episode?.toString());
     } else {
       src = await autoEmbed.getSource(id?.toString()!, isMovie);
+    }
+    res.json(src);
+  } catch (error) {
+    console.log("faild ", error);
+
+    res.send(error);
+  }
+});
+app.get("/moviesApi/watch", async (req: Request, res: Response) => {
+  res.setHeader("Content-Type", "application/json");
+  let src: Source;
+  const moviesAPI = new moviesApi();
+
+  try {
+    const id = req.query.id;
+    const isMovie = req.query.isMovie == "true";
+    if (!isMovie) {
+      const season = req.query.season;
+      const episode = req.query.episode;
+      console.log(id, isMovie, episode, season);
+      src = await moviesAPI.getSource( id?.toString()!,
+      isMovie,
+      season?.toString(),
+      episode?.toString());
+    } else {
+      src = await moviesAPI.getSource(id?.toString()!, isMovie);
     }
     res.json(src);
   } catch (error) {

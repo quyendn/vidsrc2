@@ -12,84 +12,56 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.allGetStream = void 0;
 const multiExtractor_1 = require("./multiExtractor");
 const stableExtractor_1 = require("./stableExtractor");
+const fileExtractor_1 = require("./fileExtractor");
+const getRiveStream_1 = require("./getRiveStream");
 const autoembed = 'YXV0b2VtYmVkLmNj';
 const allGetStream = (id, type) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // console.log(id);
         const streams = [];
         const { imdbId, season, episode, title, tmdbId, year } = JSON.parse(id);
-        ///// whvx
-        //  const whvxStream = await getWhvxStream(
-        //    imdbId,
-        //    tmdbId,
-        //   season,
-        //    episode,
-        //    title,
-        //    type,
-        //    year,
-        //    'nova',
-        //    'aHR0cHM6Ly9hcGkud2h2eC5uZXQ=',
-        //  );
-        //  //whvx nova
-        //  const subtitles: any = [];
-        //  for (const caption in whvxStream?.captions) {
-        //    subtitles.push({
-        //      language: whvxStream?.captions?.[caption]?.language || 'Undefined',
-        //      uri: whvxStream?.captions?.[caption]?.url,
-        //      type: 'srt',
-        //      title: whvxStream?.captions?.[caption]?.language || 'Undefined',
-        //    });
-        //  }
-        //  for (const quality in whvxStream?.qualities) {
-        //    streams.push({
-        //      server: 'Nova-' + quality,
-        //      link: whvxStream?.qualities?.[quality]?.url,
-        //     type: whvxStream?.qualities?.[quality]?.type || 'mp4',
-        //      subtitles: subtitles,
-        //     quality: quality as any,
-        //   });
-        // }
-        ///// rive
-        //await getRiveStream(tmdbId, episode, season, type, streams);
-        ///// vidsrcrip
-        //await getVidSrcRip(tmdbId, season, episode, streams);
-        // ///// flimxy
-        //  const flimxyStream = await getFlimxyStream(imdbId, season, episode, type);
-        //  if (flimxyStream) {
-        //     for (const quality in flimxyStream?.qualities) {
-        //       streams.push({
-        //         server: 'Flimxy-' + quality,
-        //         link: flimxyStream?.qualities?.[quality]?.url,
-        //         type: flimxyStream?.qualities?.[quality]?.type || 'mp4',
-        //         quality: quality as any,
-        //       subtitles: []
-        //       });
-        //     }
-        //  }
+        // Lấy dữ liệu từ các nguồn khác nhau song song
+        const rivePromise = (0, getRiveStream_1.getRiveStream)(tmdbId, episode, season, type, streams);
         const server1Url = type === 'movie'
             ? `https://${atob(autoembed)}/embed/oplayer.php?id=${imdbId}`
             : `https://${atob(autoembed)}/embed/oplayer.php?id=${imdbId}&s=${season}&e=${episode}`;
-        const links = yield (0, multiExtractor_1.multiExtractor)(server1Url);
-        links.forEach(({ lang, url }) => {
-            streams.push({
-                server: 'Multi' + (lang ? `-${lang}` : ''),
-                link: url,
-                type: 'm3u8',
-                subtitles: []
+        const multiPromise = (0, multiExtractor_1.multiExtractor)(server1Url).then((links) => {
+            links.forEach(({ lang, url }) => {
+                streams.push({
+                    server: 'Multi' + (lang ? `-${lang}` : ''),
+                    link: url,
+                    type: 'm3u8',
+                    subtitles: [],
+                });
             });
         });
         const server3Url = type === 'movie'
             ? `https://viet.${atob(autoembed)}/movie/${imdbId}`
             : `https://viet.${atob(autoembed)}/tv/${imdbId}/${season}/${episode}`;
-        const links3 = yield (0, stableExtractor_1.stableExtractor)(server3Url);
-        links3.forEach(({ lang, url }) => {
-            streams.push({
-                server: 'Viet ' + (lang ? `-${lang}` : ''),
-                link: url,
-                type: 'm3u8',
-                subtitles: []
+        const stablePromise = (0, stableExtractor_1.stableExtractor)(server3Url).then((links3) => {
+            links3.forEach(({ lang, url }) => {
+                streams.push({
+                    server: 'Viet ' + (lang ? `-${lang}` : ''),
+                    link: url,
+                    type: 'm3u8',
+                    subtitles: [],
+                });
             });
         });
+        const server4Url = type === 'movie'
+            ? `https://2embed.wafflehacker.io/scrape?id=${imdbId}`
+            : `https://2embed.wafflehacker.io/scrape?id=${imdbId}&s=${season}&e=${episode}`;
+        const stable4Promise = (0, fileExtractor_1.fileExtractor)(server4Url).then((links4) => {
+            links4.forEach(({ lang, url }) => {
+                streams.push({
+                    server: '2X ' + (lang ? `-${lang}` : ''),
+                    link: url,
+                    type: 'm3u8',
+                    subtitles: [],
+                });
+            });
+        });
+        // Sử dụng Promise.all để chạy song song các yêu cầu
+        yield Promise.all([rivePromise, multiPromise, server3Url, stable4Promise]);
         return streams;
     }
     catch (err) {

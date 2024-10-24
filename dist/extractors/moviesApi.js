@@ -11,24 +11,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const Manifest_1 = require("../Manifest");
 const types_1 = require("../utils/types");
-class AutoEmbed extends types_1.Provider {
+class moviesApi extends types_1.Provider {
     constructor() {
         super(...arguments);
         this.getSource = (id, isMovie, season, episode) => __awaiter(this, void 0, void 0, function* () {
-            let type = "tv";
-            if (isMovie) {
-                type = "movie";
-            }
-            let info = JSON.stringify({
-                imdbId: id,
-                season: season || "0",
-                episode: episode || "0",
-                tmdbId: id
-            });
-            let episodeX = yield Manifest_1.manifest["autoEmbed"].GetStream(info, type);
+            let info = '{"imdbId" : "tt1877830", "season" : 0, "episode": "0", "title" : "The Batman", "tmdbId": "414906"}';
+            let episodeX = yield Manifest_1.manifest["moviesApi"].GetStream(info, "movie");
             console.log("episodeX:" + episodeX);
             return episodeX;
         });
     }
 }
-exports.default = AutoEmbed;
+exports.default = moviesApi;

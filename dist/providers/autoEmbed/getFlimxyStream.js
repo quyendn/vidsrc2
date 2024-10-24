@@ -14,12 +14,16 @@ const getFlimxyStream = (imdbId, season, episode, type) => __awaiter(void 0, voi
     var _a;
     try {
         const baseUrl = atob('aHR0cHM6Ly9maWxteHkud2FmZmxlaGFja2VyLmlvLw==');
+        const controller = new AbortController();
+        setTimeout(() => {
+            controller.abort();
+        }, 4000);
         const filter = type === 'movie'
             ? `search?id=${imdbId}`
             : `search?id=${imdbId}&s=${season}&e=${episode}`;
         const url = `${baseUrl}${filter}`;
         console.log('flimxy url', url);
-        const res = yield fetch(url);
+        const res = yield fetch(url, { signal: controller.signal });
         const data = yield res.json();
         return (_a = data === null || data === void 0 ? void 0 : data.stream) === null || _a === void 0 ? void 0 : _a[0];
     }
