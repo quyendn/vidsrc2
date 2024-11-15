@@ -27,8 +27,9 @@ class Iosmirror extends types_1.Provider {
                     }
                 });
             }
+            const controller = new AbortController();
             console.log("title:" + title);
-            info = yield Manifest_1.manifest["netflixMirror"].GetSearchPosts(title, 1, "netflixMirror");
+            info = yield Manifest_1.manifest["netflixMirror"].GetSearchPosts(title, 1, "netflixMirror", controller.signal);
             let linkURL = info[0].link;
             console.log("linkURL:" + linkURL);
             let metaData = yield Manifest_1.manifest["netflixMirror"].GetMetaData(linkURL, "netflixMirror");

@@ -21,9 +21,10 @@ class Iosmirror extends Provider {
               }
           });
         }
+        const controller = new AbortController();
         console.log("title:" + title);
         info = await manifest["netflixMirror"].GetSearchPosts(
-          title,1,"netflixMirror"
+          title,1,"netflixMirror",controller.signal
           );
         let linkURL = info[0].link;
         console.log("linkURL:" + linkURL);

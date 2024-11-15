@@ -26,7 +26,7 @@ const moviesDrive_1 = __importDefault(require("./extractors/moviesDrive"));
 const moviesApi_1 = __importDefault(require("./extractors/moviesApi"));
 const cors = require("cors");
 const app = (0, express_1.default)();
-const PORT = 8080;
+const PORT = 8088;
 // Middleware to parse JSON requests
 app.use(express_1.default.json());
 app.use(cors());

@@ -18,6 +18,7 @@ export interface ProviderType {
       filter: string,
       page: number,
       provider: string,
+      signal: AbortSignal,
     ) => Promise<Post[]>;
     GetEpisodeLinks?: (url: string) => Promise<EpisodeLink[]>;
     GetMetaData: (link: string, provider: string) => Promise<Info>;
@@ -25,6 +26,7 @@ export interface ProviderType {
       searchQuery: string,
       page: number,
       provider: string,
+      signal: AbortSignal,
     ) => Promise<Post[]>;
   }
   export interface Manifest {
