@@ -3,6 +3,7 @@ import {netflixMirror} from './providers/netflixMirror';
 import {autoEmbed} from './providers/autoEmbed';
 import {moviesDrive} from './providers/drive';
 import {moviesApi} from './providers/moviesApi';
+import {multiMovies} from './providers/multi';
 export interface ProviderType {
     searchFilter?: string;
     catalog: Catalog[];
@@ -36,6 +37,7 @@ export interface ProviderType {
     netflixMirror: netflixMirror,
     autoEmbed: autoEmbed,
     moviesDrive: moviesDrive,
-    moviesApi: moviesApi
+    moviesApi: moviesApi,
+    multiMovies: multiMovies
   };
   
