@@ -24,6 +24,7 @@ const chalk_1 = __importDefault(require("chalk"));
 const autoembed_1 = __importDefault(require("./extractors/autoembed"));
 const moviesDrive_1 = __importDefault(require("./extractors/moviesDrive"));
 const moviesApi_1 = __importDefault(require("./extractors/moviesApi"));
+const multi_1 = __importDefault(require("./extractors/multi"));
 const cors = require("cors");
 const app = (0, express_1.default)();
 const PORT = 8088;
@@ -250,6 +251,29 @@ app.get("/vidsrcx/:id", (req, res) => __awaiter(void 0, void 0, void 0, function
     catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error vidsrc.me' });
+    }
+}));
+app.get("/multi/watch", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.setHeader("Content-Type", "application/json");
+    let src;
+    const moviemulti = new multi_1.default();
+    try {
+        const id = req.query.id;
+        const isMovie = req.query.isMovie == "true";
+        if (!isMovie) {
+            const season = req.query.season;
+            const episode = req.query.episode;
+            console.log(id, isMovie, episode, season);
+            src = yield moviemulti.getSource(id === null || id === void 0 ? void 0 : id.toString(), isMovie, season === null || season === void 0 ? void 0 : season.toString(), episode === null || episode === void 0 ? void 0 : episode.toString());
+        }
+        else {
+            src = yield moviemulti.getSource(id === null || id === void 0 ? void 0 : id.toString(), isMovie);
+        }
+        res.json(src);
+    }
+    catch (error) {
+        console.log("faild ", error);
+        res.send(error);
     }
 }));
 app.listen(PORT, () => {
