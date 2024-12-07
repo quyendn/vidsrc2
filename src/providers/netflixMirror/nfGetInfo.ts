@@ -1,19 +1,23 @@
 import axios from 'axios';
 import {Info, Link} from '../../utils/types';
-import {headers} from './nfHeaders';
+import {getNfHeaders} from './nfHeaders';
+import {nfGetCookie} from './nfGetCookie';
 
 export const nfGetInfo = async function (link: string): Promise<Info> {
   try {
     const url = link;
     console.log('nfifo', url);
-    const res = await axios.get(url, {
-      headers: headers,
+    const cookies = await nfGetCookie();
+    const res = await fetch(url, {
+      headers: {
+        cookie: cookies,
+      },
+      credentials: 'omit',
     });
-    const data = res.data;
-    console.log('data', data);
+    const data = await res.json();
     const id = link.split('id=')[1]?.split('&')[0];
     const meta = {
-      id: id,
+      id : "",
       title: data.title,
       synopsis: data.desc,
       image: `https://img.nfmirrorcdn.top/poster/h/${id}.jpg`,
@@ -28,34 +32,33 @@ export const nfGetInfo = async function (link: string): Promise<Info> {
     if (data?.season?.length > 0) {
       data.season.map((season: any) => {
         linkList.push({
-          id : id,
           title: 'Season ' + season?.s,
           episodesLink: season?.id,
+          id : ""
         });
       });
     } else {
       linkList.push({
-        id : id,
+        id : "",
         title: meta.title,
-        directLinks: [{link: link, title: 'Movie', type: 'movie'}],
+        directLinks: [{link: id, title: 'Movie', type: 'movie'}],
       });
     }
-
     return {
       ...meta,
-
       linkList: linkList,
     };
   } catch (err) {
     console.error(err);
     return {
-      id : '',
+      id : "",
       title: '',
       synopsis: '',
       image: '',
       imdbId: '',
       type: '',
       linkList: [],
+      
     };
   }
 };

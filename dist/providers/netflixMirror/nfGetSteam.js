@@ -8,32 +8,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.nfGetStream = void 0;
-const axios_1 = __importDefault(require("axios"));
-const nfHeaders_1 = require("./nfHeaders");
 const getBaseUrl_1 = require("../../utils/getBaseUrl");
+const nfGetCookie_1 = require("./nfGetCookie");
 const nfGetStream = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
     try {
         const baseUrl = yield (0, getBaseUrl_1.getBaseUrl)('nfMirror');
         const url = `${baseUrl}/playlist.php?id=${id}&t=${Math.round(new Date().getTime() / 1000)}`;
-        const res = yield axios_1.default.get(url, {
-            headers: nfHeaders_1.headers,
+        const cookies = (yield (0, nfGetCookie_1.nfGetCookie)()) + ' hd=on;';
+        console.log('cookies', cookies);
+        const res = yield fetch(url, {
+            headers: {
+                cookie: cookies,
+            },
+            credentials: 'omit',
         });
-        const data = (_a = res.data) === null || _a === void 0 ? void 0 : _a[0];
+        const resJson = yield res.json();
+        const data = resJson === null || resJson === void 0 ? void 0 : resJson[0];
         const streamLinks = [];
         data === null || data === void 0 ? void 0 : data.sources.forEach((source) => {
             streamLinks.push({
                 server: source.label,
                 link: baseUrl + source.file,
-                subtitles: [],
                 type: 'm3u8',
+                subtitles: [],
                 headers: {
                     Referer: baseUrl,
+                    origin: baseUrl,
                 },
             });
         });

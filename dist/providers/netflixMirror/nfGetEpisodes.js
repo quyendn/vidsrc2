@@ -26,8 +26,9 @@ const nfGetEpisodes = function (link) {
                 '&t=' +
                 Math.round(new Date().getTime() / 1000);
             console.log('nfEpisodesUrl', url);
+            const headers = yield (0, nfHeaders_1.getNfHeaders)();
             const res = yield axios_1.default.get(url, {
-                headers: nfHeaders_1.headers,
+                headers: headers,
             });
             const data = res.data;
             const episodeList = [];

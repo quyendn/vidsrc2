@@ -2,6 +2,8 @@ import {Post, Stream, Info, EpisodeLink, Catalog} from './utils/types';
 import {netflixMirror} from './providers/netflixMirror';
 import {autoEmbed} from './providers/autoEmbed';
 import {moviesDrive} from './providers/drive';
+import {moviesApi} from './providers/moviesApi';
+import {multiMovies} from './providers/multi';
 export interface ProviderType {
     searchFilter?: string;
     catalog: Catalog[];
@@ -17,6 +19,7 @@ export interface ProviderType {
       filter: string,
       page: number,
       provider: string,
+      signal: AbortSignal,
     ) => Promise<Post[]>;
     GetEpisodeLinks?: (url: string) => Promise<EpisodeLink[]>;
     GetMetaData: (link: string, provider: string) => Promise<Info>;
@@ -24,6 +27,7 @@ export interface ProviderType {
       searchQuery: string,
       page: number,
       provider: string,
+      signal: AbortSignal,
     ) => Promise<Post[]>;
   }
   export interface Manifest {
@@ -32,6 +36,8 @@ export interface ProviderType {
   export const manifest: Manifest = {
     netflixMirror: netflixMirror,
     autoEmbed: autoEmbed,
-    moviesDrive: moviesDrive
+    moviesDrive: moviesDrive,
+    moviesApi: moviesApi,
+    multiMovies: multiMovies
   };
   

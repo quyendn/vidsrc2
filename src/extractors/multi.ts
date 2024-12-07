@@ -2,7 +2,7 @@ import {manifest} from '../Manifest';
 import { DecryptMethods, Provider, Source } from "../utils/types";
 import {Info,Post} from '../utils/types';
 import {fetchMovieData, fetchTVData } from "../utils/function";
-class Iosmirror extends Provider {
+class multi extends Provider {
     getSource = async (
         tmdbId: string,
         isMovie: boolean,
@@ -23,16 +23,16 @@ class Iosmirror extends Provider {
         }
         const controller = new AbortController();
         console.log("title:" + title);
-        info = await manifest["netflixMirror"].GetSearchPosts(
-          title,1,"netflixMirror",controller.signal
+        info = await manifest["multiMovies"].GetSearchPosts(
+          title,1,"multiMovies",controller.signal
           );
         let linkURL = info[0].link;
         console.log("linkURL:" + linkURL);
-        let metaData = await  manifest["netflixMirror"].GetMetaData(linkURL,"netflixMirror");
-        console.log("metaData:" + metaData);
-        let episodeX = await  manifest["netflixMirror"].GetStream(metaData.id,"movie");
+        let metaData = await  manifest["multiMovies"].GetMetaData(linkURL,"multiMovies");
+        console.log("metaData:" + JSON.stringify(metaData));
+        let episodeX = await  manifest["multiMovies"].GetStream(linkURL,"movie");
         console.log("episodeX:" + episodeX);
         return episodeX;
       };
 }
-export default Iosmirror;
+export default multi;

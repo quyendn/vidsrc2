@@ -17,14 +17,17 @@ const upcloud_1 = __importDefault(require("./extractors/upcloud"));
 const vidsrcNet_1 = __importDefault(require("./extractors/vidsrcNet"));
 const vidlink_1 = __importDefault(require("./extractors/vidlink"));
 const vidsrc_xyz_1 = require("./extractors/vidsrc.xyz");
+const vidsrc_decode_1 = require("./extractors/vidsrc.decode");
 const hdrezka_1 = __importDefault(require("./extractors/hdrezka"));
 const iosmirror_1 = __importDefault(require("./extractors/iosmirror"));
 const chalk_1 = __importDefault(require("chalk"));
 const autoembed_1 = __importDefault(require("./extractors/autoembed"));
 const moviesDrive_1 = __importDefault(require("./extractors/moviesDrive"));
+const moviesApi_1 = __importDefault(require("./extractors/moviesApi"));
+const multi_1 = __importDefault(require("./extractors/multi"));
 const cors = require("cors");
 const app = (0, express_1.default)();
-const PORT = 3000;
+const PORT = 8088;
 // Middleware to parse JSON requests
 app.use(express_1.default.json());
 app.use(cors());
@@ -54,6 +57,29 @@ app.get("/autoEmbed/watch", (req, res) => __awaiter(void 0, void 0, void 0, func
         }
         else {
             src = yield autoEmbed.getSource(id === null || id === void 0 ? void 0 : id.toString(), isMovie);
+        }
+        res.json(src);
+    }
+    catch (error) {
+        console.log("faild ", error);
+        res.send(error);
+    }
+}));
+app.get("/moviesApi/watch", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.setHeader("Content-Type", "application/json");
+    let src;
+    const moviesAPI = new moviesApi_1.default();
+    try {
+        const id = req.query.id;
+        const isMovie = req.query.isMovie == "true";
+        if (!isMovie) {
+            const season = req.query.season;
+            const episode = req.query.episode;
+            console.log(id, isMovie, episode, season);
+            src = yield moviesAPI.getSource(id === null || id === void 0 ? void 0 : id.toString(), isMovie, season === null || season === void 0 ? void 0 : season.toString(), episode === null || episode === void 0 ? void 0 : episode.toString());
+        }
+        else {
+            src = yield moviesAPI.getSource(id === null || id === void 0 ? void 0 : id.toString(), isMovie);
         }
         res.json(src);
     }
@@ -212,6 +238,42 @@ app.get("/vidsrcin/:id", (req, res) => __awaiter(void 0, void 0, void 0, functio
     catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal server error vidsrc.me' });
+    }
+}));
+app.get("/vidsrcx/:id", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const src_link = req.query.src_link;
+        const rcp_link = req.query.rcp_link;
+        const result = yield (0, vidsrc_decode_1.decodeVidSrc)(src_link, rcp_link);
+        console.log("result from vidsrcx: ", result);
+        res.json(result);
+    }
+    catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error vidsrc.me' });
+    }
+}));
+app.get("/multi/watch", (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    res.setHeader("Content-Type", "application/json");
+    let src;
+    const moviemulti = new multi_1.default();
+    try {
+        const id = req.query.id;
+        const isMovie = req.query.isMovie == "true";
+        if (!isMovie) {
+            const season = req.query.season;
+            const episode = req.query.episode;
+            console.log(id, isMovie, episode, season);
+            src = yield moviemulti.getSource(id === null || id === void 0 ? void 0 : id.toString(), isMovie, season === null || season === void 0 ? void 0 : season.toString(), episode === null || episode === void 0 ? void 0 : episode.toString());
+        }
+        else {
+            src = yield moviemulti.getSource(id === null || id === void 0 ? void 0 : id.toString(), isMovie);
+        }
+        res.json(src);
+    }
+    catch (error) {
+        console.log("faild ", error);
+        res.send(error);
     }
 }));
 app.listen(PORT, () => {

@@ -8,12 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.mainVidSrc = void 0;
-const axios_1 = __importDefault(require("axios"));
+exports.decodeVidSrc = void 0;
 const user_agent = "Mozilla/5.0 (X11; Linux x86_64; rv:125.0) Gecko/20100101 Firefox/125.0";
 const proxy_url = 'http://123.30.171.163:8081';
 const referer_url = 'https://ate60vs7zcjhsjo5qgv8.com';
@@ -257,31 +253,14 @@ function decrypt(method, encoded) {
 }
 function fwh(url, ref) {
     return __awaiter(this, void 0, void 0, function* () {
-        // let resp = await fetch(url, {
-        //     headers: {
-        //         "User-Agent": user_agent,
-        //         "Referer": ref,
-        //         "Origin": ref,
-        //     }
-        // });
-        // let txt = await resp.text();
-        const controller = new AbortController();
-        setTimeout(() => {
-            controller.abort();
-        }, 4000);
-        console.log("data fwh: " + url);
-        let resp = yield axios_1.default.get(url, {
+        let resp = yield fetch(url, {
             headers: {
                 "User-Agent": user_agent,
                 "Referer": ref,
                 "Origin": ref,
-            },
-            proxy: get_random_proxy(proxies),
-            signal: controller.signal,
-            method: 'GET'
+            }
         });
-        let txt = yield resp.data;
-        console.log("data fwh: " + txt);
+        let txt = yield resp.text();
         return txt;
     });
 }
@@ -291,64 +270,11 @@ function get_method(method) {
     let third = method.slice(1, 4);
     return first + second + third + method[0];
 }
-const mainVidSrc = (xrax, s, e) => __awaiter(void 0, void 0, void 0, function* () {
-    let movie_embed_link = "https://vidsrc.me/embed/" + xrax;
-    if (s != null) {
-        movie_embed_link = "https://vidsrc.me/embed/" + xrax + "/" + s + "-" + e;
-    }
-    console.log("movie_embed_link:" + movie_embed_link);
-    const controller = new AbortController();
-    setTimeout(() => {
-        controller.abort();
-    }, 4000);
-    const resSearch = yield axios_1.default.get(movie_embed_link, {
-        headers: {
-            "User-Agent": user_agent,
-            "Referer": movie_embed_link
-        },
-        proxy: get_random_proxy(proxies),
-        signal: controller.signal,
-        method: 'GET'
-    });
-    console.log("data:" + resSearch.data);
-    // let main_resp = await fetch(movie_embed_link, {
-    //     headers: {
-    //         "User-Agent": user_agent,
-    //         "Referer": movie_embed_link
-    //     }
-    // });
-    // let txt = await main_resp.text();
-    let txt = yield resSearch.data;
-    let reg = /player_iframe" src="[^"]*/g;
-    let rcp_link = regMatch(txt, reg)[0];
-    rcp_link = "https://" + rcp_link.slice(22);
-    console.log("rcp_link:" + rcp_link);
-    //console.log(rcp_link);
-    // let rcp_resp = await fetch(rcp_link, {
-    //     headers: {
-    //         "User-Agent": user_agent,
-    //         "Referer": movie_embed_link
-    //     }
-    // });
-    // let rcp_txt = await rcp_resp.text();
-    let rcp_resp = yield axios_1.default.get(rcp_link, {
-        headers: {
-            "User-Agent": user_agent,
-            "Referer": movie_embed_link
-        },
-        proxy: get_random_proxy(proxies),
-        signal: controller.signal,
-        method: 'GET'
-    });
-    let rcp_txt = yield rcp_resp.data;
-    reg = /prorcp[^']*/g;
-    let srcrcp_link = "https://ate60vs7zcjhsjo5qgv8.com/" + regMatch(rcp_txt, reg)[0];
-    console.log("srcrcp_link:" + srcrcp_link);
-    srcrcp_link = "https://ate60vs7zcjhsjo5qgv8.com/prorcp/OTllZDNiNTZmYTU1ZjM0OWI1NzUwODMyNDYwMTQ0YTA6Y2xCcGVYSk5WVFJxVDBKNmJtRnRNMk0yTTJKbU4yMHZTbEpxUXpCTFRWbHRkV2RzTDA0MmJFcDZZbWwyVlVObU9UQXlPVzV0ZFRSamJIWk5SbEpIUW5kbmMwRTJUM1pNVnl0VVEyMHhWR2hxWnpOcWJIRkljMnhtTTNJNFowRldiakJFSzNCbVkycG1WV2N5VlZSMU4zWTFUSGgwU25aTlZGSkZTR1JZY2tFMVFUWkZRVzlrTTBaelQyRmhZVzVVVEhNMVkwaHRPVzhyY0Rkb2JWTnFNMnBJU0VwUWQybE1OMEpKY1dkNU1rOTVRVkY0Y1RCYWMxZGtXbWxOU0VkSU1IVkZjRWx4TTNSTmFWRjBTa2xpTmtkU1N6WkVWVTVZZG1Sb2EzVXdWVTV2TVZjclVISnNSM2huYTBwRE0wUnBWa1ZJUVVacGR5OWlTSHBGYms1S01HZGhjMUl2Y21kNmVpdG9NSFZKWjIxS2R6Y3dZekJ5V2xKSloxazNkVVJSYTNoeU5XMUZlRGRNVEdoSVZWSnpjWGxXYm1kRWRGRTFlbUZFYjBreGQwRXhiVEZWWkZKeVEwSktaeXRxU25WVlNGcHNjV1JoYkdNdlNqRndjbGQyUm1aWGRqZElaM1kyY0V0MU9GWjJaMU4xUlM5aFJtaEtZbUpYVlZCV2JtOTJTbWxRYWpkTGFrRk5LM2hEU2tsVWJXOTBielYyV1dKRGRXRXpMMjR3ZEVkb1pFeFdaVmRvY2tKWE4wUmpSMGgxUmxWTmIwTndkbU5xTUZCblJXaHhSbkZoY3pKdGVIRkxTa1IyT1c5dmJFUTFjSGgyVkVFeE5VbDRaRFpFTTJWSWNucHZaMnRLT1ZFeFZHczJOWEowWmt0MWNuaFViU3RaVkhvd1lUaE9PVmxRY0V0aFlYVmFlV3BvZEVONmNESnRUelJQU1RrclVYWkZia2RXSzBOVVN6a3lkV0pJWm14Sk4yZDZialYzU1RCeE1qYzNOMWQwWTAxdkwyNXpXVkV6U25GeGJVcE5iRFJvVVhodE9WRmxOWEp4YkhkR1kyUlpjekF3Tm1jdlFrRTBNM0pCUldaSGVsZE5TM1V3UTB0M0t6ZFZTV1puSzFFMWRUbDRlVVJNY2s1MWFteEVOVXh5YkV0S2FFWkVkRFJwTTFJdlNWazJkREkwY3pOUFNWWlVZMGhyYjJsbWIxVTVTa1p5TDJod2FWRnRSVWhTWm1sRGNISTBkMGhJWW5CQlYyMUtVR0ZsTWs1S09IZG1TREZOYm10T2RHRmxOMFJhT0ZFeVdVOUpTV3RNVFhWM1dXNWlOeXRTUkVKeE5XUkViWHBRUjI1dlpHaFBVM1ZUV0VkTGFVTjZXVkYwVW1oa1VXbEpXVVIxVlhjM2JXcExjbVF2YnpOUVNFRktWSEpLU1Zsc1MzbFdlWHA2VDFCb2VXMXpOVGQwWWxsaWQzbFVjRmM1Tm5kS1NGTlRWR1JXTWpKeFQycEJiM012ZFZVeGF6QTNhbmRYYms4NFQxcGhVVGwyUkc5YVMwNVZRMUJLV2pkb2VrUk5OMlZPVGs0d1YxRmtibXBqWXpac09ITTJMelV6Tkd4eFRtTTNjR3hwVGpjMWIyMUdWelZKTTBSR1pXWnRLMWRLVDNGc2VFZEJlQzgzTlZkMldXNXhRVE4wTTJONE5EWTJSbTU1VmpkQmEyRnRjMGhzZW5WU1dIQnFaVlZJYzFKcWEwVm9ZV3BLUzJ4REwwMHpVR3hYUkRsVFJISTVabVJWS3pFeVQxTTFlRzUyVmpGNWRGSmlXRVp6Ym0xaFRHZGxUSFJrYlROck0wSndRVVJUTml0MmFsRldTbXcxTUdWb2NGQk9NRlp4T1U5NE1Fd3ZRV1pzTmpZMmIwSXlOVXBPTldkTk1tMWxObGM1VjBabFIxUjJWVlZaWkVOVWN6TldhUzh2VHpGVFQwbE9lR012UVdZNFVWaEZPVE5SVVZKSGNUQnBVVk5pY21kdlJrb3ZNVFo0TkZoMU5ERlBZMHhuU0hCc2FqWkRkR1ExTmxGME9UaE1TazlITVhoRGRIVTVjVTV0WkhCNU9HRnBVRnBYVG5jclRsVjFOR016Y3pWbFFWRnVOV3A2UVVWWWJqRTVORXgyVkZvd1RVZHZlWGhuVjNGSk1rdGlObHBZV0RoWVRubzFZa3d4YmtkR2JGcFlhR2czWVhBMVZYRnVRelZwYlcxTk5GcEhNMFZzU2xWdFVWQjRUbk12YmxaRlFtTTNVR2R6YzFoR1RHUkJiVm96VW1NM2NVZFlXWGhUUm1WblJrbzBVbnBLV0V4WWExQk9TVUV4UkZoclRuRnRXbHBWV205bmIwdExRVlYyVTIwMlF6WjJkSE5TYW1WS01qQkdkalI1TDNWMGEwMVpWbEp5ZGtWR2JYUm9Xa3QzV1RselZsaHFiMXBhYldSbWVYWk9SbmhIUVQwPQ--";
-    let srcrcp_text = yield fwh(srcrcp_link, rcp_link);
+const decodeVidSrc = (src_link, rcp_link) => __awaiter(void 0, void 0, void 0, function* () {
+    let srcrcp_text = yield fwh(src_link, rcp_link);
     const streams = [];
     try {
-        reg = /div id="[a-zA-z0-9]{10}"/g;
+        let reg = /div id="[a-zA-z0-9]{10}"/g;
         let decryption_method = regMatch(srcrcp_text, reg)[0].slice(8, -1);
         decryption_method = get_method(decryption_method);
         console.log(decryption_method);
@@ -364,7 +290,7 @@ const mainVidSrc = (xrax, s, e) => __awaiter(void 0, void 0, void 0, function* (
         return streams;
     }
     catch (e) {
-        reg = /file:"[^"]*/g;
+        let reg = /file:"[^"]*/g;
         let encoded = regMatch(srcrcp_text, reg)[0].slice(6);
         let decoded = decode(encoded);
         console.log("decoded:" + decoded);
@@ -375,7 +301,7 @@ const mainVidSrc = (xrax, s, e) => __awaiter(void 0, void 0, void 0, function* (
         return streams;
     }
 });
-exports.mainVidSrc = mainVidSrc;
+exports.decodeVidSrc = decodeVidSrc;
 function decode(x) {
     let v = {
         'bk0': '%?6497.[:4',

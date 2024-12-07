@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Manifest_1 = require("../Manifest");
 const types_1 = require("../utils/types");
 const function_1 = require("../utils/function");
-class Iosmirror extends types_1.Provider {
+class multi extends types_1.Provider {
     constructor() {
         super(...arguments);
         this.getSource = (tmdbId, isMovie, season, episode) => __awaiter(this, void 0, void 0, function* () {
@@ -29,15 +29,15 @@ class Iosmirror extends types_1.Provider {
             }
             const controller = new AbortController();
             console.log("title:" + title);
-            info = yield Manifest_1.manifest["netflixMirror"].GetSearchPosts(title, 1, "netflixMirror", controller.signal);
+            info = yield Manifest_1.manifest["multiMovies"].GetSearchPosts(title, 1, "multiMovies", controller.signal);
             let linkURL = info[0].link;
             console.log("linkURL:" + linkURL);
-            let metaData = yield Manifest_1.manifest["netflixMirror"].GetMetaData(linkURL, "netflixMirror");
-            console.log("metaData:" + metaData);
-            let episodeX = yield Manifest_1.manifest["netflixMirror"].GetStream(metaData.id, "movie");
+            let metaData = yield Manifest_1.manifest["multiMovies"].GetMetaData(linkURL, "multiMovies");
+            console.log("metaData:" + JSON.stringify(metaData));
+            let episodeX = yield Manifest_1.manifest["multiMovies"].GetStream(linkURL, "movie");
             console.log("episodeX:" + episodeX);
             return episodeX;
         });
     }
 }
-exports.default = Iosmirror;
+exports.default = multi;

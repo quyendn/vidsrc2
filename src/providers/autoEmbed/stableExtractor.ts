@@ -6,10 +6,10 @@ type Links = {
     try {
       // console.log('stableExtractorUrl', url);
       const links: Links[] = [];
-  
+      console.log('url', url);
       const res = await fetch(url);
       const html = await res.text();
-      // console.log('stableExtractorHtml', html);
+      console.log('stableExtractorHtml', html);
   
       const regex = /file:\s*"([^"]+)"/;
       const match = regex.exec(html);

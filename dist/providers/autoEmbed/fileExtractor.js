@@ -9,21 +9,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.stableExtractor = stableExtractor;
-function stableExtractor(url) {
+exports.fileExtractor = fileExtractor;
+function fileExtractor(url) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             // console.log('stableExtractorUrl', url);
             const links = [];
-            console.log('url', url);
             const res = yield fetch(url);
-            const html = yield res.text();
-            console.log('stableExtractorHtml', html);
-            const regex = /file:\s*"([^"]+)"/;
-            const match = regex.exec(html);
-            if (match) {
-                const [, url] = match;
-                links.push({ lang: '', url });
+            const jsonResponse = yield res.json();
+            console.log('stableExtractor JSON:', jsonResponse);
+            // Truy cập đến thuộc tính playlist trong JSON
+            const stream = jsonResponse.stream;
+            if (stream && stream.length > 0) {
+                const playlistUrl = stream[0].playlist;
+                if (playlistUrl) {
+                    links.push({ lang: '', url: playlistUrl });
+                }
             }
             // console.log('stableExtractor', links);
             return links;

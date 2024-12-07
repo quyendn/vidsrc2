@@ -11,6 +11,8 @@ import Iosmirror from "./extractors/iosmirror";
 import chalk from "chalk";
 import AutoEmbed  from "./extractors/autoembed";
 import moviesDrive  from "./extractors/moviesDrive";
+import moviesApi from "./extractors/moviesApi";
+import multi from "./extractors/multi";
 const cors = require("cors");
 
 const app = express();
@@ -53,6 +55,32 @@ app.get("/autoEmbed/watch", async (req: Request, res: Response) => {
       episode?.toString());
     } else {
       src = await autoEmbed.getSource(id?.toString()!, isMovie);
+    }
+    res.json(src);
+  } catch (error) {
+    console.log("faild ", error);
+
+    res.send(error);
+  }
+});
+app.get("/moviesApi/watch", async (req: Request, res: Response) => {
+  res.setHeader("Content-Type", "application/json");
+  let src: Source;
+  const moviesAPI = new moviesApi();
+
+  try {
+    const id = req.query.id;
+    const isMovie = req.query.isMovie == "true";
+    if (!isMovie) {
+      const season = req.query.season;
+      const episode = req.query.episode;
+      console.log(id, isMovie, episode, season);
+      src = await moviesAPI.getSource( id?.toString()!,
+      isMovie,
+      season?.toString(),
+      episode?.toString());
+    } else {
+      src = await moviesAPI.getSource(id?.toString()!, isMovie);
     }
     res.json(src);
   } catch (error) {
@@ -254,6 +282,34 @@ app.get("/vidsrcx/:id", async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Internal server error vidsrc.me' });
   }
 });
+
+app.get("/multi/watch", async (req: Request, res: Response) => {
+  res.setHeader("Content-Type", "application/json");
+  let src: Source;
+  const moviemulti = new multi();
+
+  try {
+    const id = req.query.id;
+    const isMovie = req.query.isMovie == "true";
+    if (!isMovie) {
+      const season = req.query.season;
+      const episode = req.query.episode;
+      console.log(id, isMovie, episode, season);
+      src = await moviemulti.getSource( id?.toString()!,
+      isMovie,
+      season?.toString(),
+      episode?.toString());
+    } else {
+      src = await moviemulti.getSource(id?.toString()!, isMovie);
+    }
+    res.json(src);
+  } catch (error) {
+    console.log("faild ", error);
+
+    res.send(error);
+  }
+});
+
 
 app.listen(PORT, () => {
   console.log(chalk.green(`Starting server on port ${PORT}... 🚀`));
