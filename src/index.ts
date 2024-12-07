@@ -14,7 +14,7 @@ import moviesDrive  from "./extractors/moviesDrive";
 const cors = require("cors");
 
 const app = express();
-const PORT = 3000;
+const PORT = 8088;
 
 // Middleware to parse JSON requests
 app.use(express.json());
