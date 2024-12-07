@@ -17,37 +17,37 @@ export const allGetStream = async (
     
 
     // whvx orion
-    const whvxStreamOrion = await getWhvxStream(
-      imdbId,
-      tmdbId,
-      season,
-      episode,
-      title,
-      type,
-      year,
-      'orion',
-      'aHR0cHM6Ly9hcGkud2h2eC5uZXQ=',
-    );
-    const subtitlesOrion = [];
-    for (const caption in whvxStreamOrion?.captions) {
-      subtitlesOrion.push({
-        language: whvxStreamOrion?.captions?.[caption]?.language || 'Undefined',
-        uri: whvxStreamOrion?.captions?.[caption]?.url,
-        type:"VTT",
-        title: whvxStreamOrion?.captions?.[caption]?.language || 'Undefined',
-      });
-    }
-    if (whvxStreamOrion?.playlist) {
-      streams.push({
-        server: 'Orion',
-        link: whvxStreamOrion?.playlist,
-        type: whvxStreamOrion?.type === 'hls' ? 'm3u8' : 'mp4',
-        subtitles: [],
-        headers: {
-          origin: atob('aHR0cHM6Ly93d3cudmlkYmluZ2UuY29t'),
-        },
-      });
-    }
+    // const whvxStreamOrion = await getWhvxStream(
+    //   imdbId,
+    //   tmdbId,
+    //   season,
+    //   episode,
+    //   title,
+    //   type,
+    //   year,
+    //   'orion',
+    //   'aHR0cHM6Ly9hcGkud2h2eC5uZXQ=',
+    // );
+    // const subtitlesOrion = [];
+    // for (const caption in whvxStreamOrion?.captions) {
+    //   subtitlesOrion.push({
+    //     language: whvxStreamOrion?.captions?.[caption]?.language || 'Undefined',
+    //     uri: whvxStreamOrion?.captions?.[caption]?.url,
+    //     type:"VTT",
+    //     title: whvxStreamOrion?.captions?.[caption]?.language || 'Undefined',
+    //   });
+    // }
+    // if (whvxStreamOrion?.playlist) {
+    //   streams.push({
+    //     server: 'Orion',
+    //     link: whvxStreamOrion?.playlist,
+    //     type: whvxStreamOrion?.type === 'hls' ? 'm3u8' : 'mp4',
+    //     subtitles: [],
+    //     headers: {
+    //       origin: atob('aHR0cHM6Ly93d3cudmlkYmluZ2UuY29t'),
+    //     },
+    //   });
+    // }
     // console.log('whvxorion', whvxStreamOrion?.playlist);
 
     // const whvxStreamAstra = await getWhvxStream(
@@ -119,20 +119,20 @@ export const allGetStream = async (
        });
      });
 
-    const server4Url =
-    type === 'movie'
-      ? `https://2embed.wafflehacker.io/scrape?id=${imdbId}`
-      : `https://2embed.wafflehacker.io/scrape?id=${imdbId}&s=${season}&e=${episode}`;
-  const stable4Promise = fileExtractor(server4Url).then((links4) => {
-    links4.forEach(({ lang, url }) => {
-      streams.push({
-        server: '2X ' + (lang ? `-${lang}` : ''),
-        link: url,
-        type: 'm3u8',
-        subtitles: [],
-      });
-    });
-  });
+  //   const server4Url =
+  //   type === 'movie'
+  //     ? `https://2embed.wafflehacker.io/scrape?id=${imdbId}`
+  //     : `https://2embed.wafflehacker.io/scrape?id=${imdbId}&s=${season}&e=${episode}`;
+  // const stable4Promise = fileExtractor(server4Url).then((links4) => {
+  //   links4.forEach(({ lang, url }) => {
+  //     streams.push({
+  //       server: '2X ' + (lang ? `-${lang}` : ''),
+  //       link: url,
+  //       type: 'm3u8',
+  //       subtitles: [],
+  //     });
+  //   });
+  // });
 
   
 
@@ -156,7 +156,7 @@ export const allGetStream = async (
 
 
     // Sử dụng Promise.all để chạy song song các yêu cầu
-    await Promise.all([whvxStreamOrion,multiPromise,stablePromise,stable4Promise]);
+    await Promise.all([multiPromise,stablePromise]);
     return streams;
   } catch (err) {
     console.error(err);
